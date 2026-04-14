@@ -1,6 +1,7 @@
 import Collider from "../Collider.js";
 import Coord from "../Coord.js";
 import Rect from "../Rect.js";
+import { DeltaTime } from "../Tools.js";
 import GameObject from "./GameObject.js";
 
 export default class LaserShot extends GameObject {
@@ -34,12 +35,6 @@ export default class LaserShot extends GameObject {
         this.__collider.updateDetection();
     }
 
-    preRender() {
-    }
-    
-    posRender() {        
-    }
-
     render(context) {
         this.preRender(context);
         context.fillStyle = "green";
@@ -49,7 +44,7 @@ export default class LaserShot extends GameObject {
     }
 
     moveUp() {
-        this.__coord = new Coord(this.getX(), this.getY() - 5)
+        this.__coord = new Coord(this.getX(), this.getY() - (600 * DeltaTime.getDeltaSeconds()))
     }
 
 }

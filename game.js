@@ -2,7 +2,7 @@ import { ControlBuilder } from "./src/Control.js";
 import Player from "./src/Objects/Player.js";
 import Enemy from "./src/Objects/Enemy.js";
 import Scenario from "./src/Scenario.js";
-import { FrameIntervals, FrameTimeout, IDGenerator, randomIntNumber } from "./src/Tools.js";
+import { DeltaTime, FrameIntervals, FrameTimeout, IDGenerator, randomIntNumber } from "./src/Tools.js";
 import Rect from "./src/Rect.js";
 import Coord from "./src/Coord.js";
 import Collider from "./src/Collider.js";
@@ -54,6 +54,8 @@ class Game {
             object.setCoord(new Coord(leftWallObject.getX() + 17 ,object.getY()));
         })
 
+        FrameTimeout.add(() => {console.log("Executando timeout de teste")}, 10000);
+
         leftWallObject.setCollider(leftWallCollider);
         this.scenario.addObject(leftWallObject);
         requestAnimationFrame(this.gameLoop);
@@ -61,18 +63,10 @@ class Game {
     }
 
     gameLoop(timestamp) {
-        if(this.lastTimeStamp === 0) {
-            this.lastTimeStamp = timestamp;
-            requestAnimationFrame(this.gameLoop);
-            return;
-        }
-        let deltaMs = timestamp - this.lastTimeStamp;
-        //console.log(deltaMs);
-        //console.log(Math.min(deltaMs / 1000, 0.033));
-
-
+        DeltaTime.setLastTimeStamp(timestamp);
+        //console.log(DeltaTime.getDeltaSeconds());
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        FrameTimeout.startListenTimeouts(timestamp);
+        FrameTimeout.startListenTimeouts();
         FrameIntervals.startListenIntervals(timestamp);
         this.control.listenControls();
         this.scenario.update();
@@ -86,7 +80,7 @@ class Game {
             FrameIntervals.removeInterval(this.respawnId);
         }
 
-        this.lastTimeStamp = timestamp;
+
         requestAnimationFrame(this.gameLoop);
     }
 

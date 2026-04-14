@@ -2,6 +2,31 @@ export function randomIntNumber(min, max) {
     return Number.parseInt(Math.random() * (max - min) + (min));
 }
 
+export class DeltaTime {
+
+    static lastTimeStamp = 0;
+    static deltaMs = 0;
+
+    static getDeltaMS() {
+        return Math.min(DeltaTime.deltaMs, 33);
+    }
+
+    static getDeltaSeconds() {
+        return Math.min(DeltaTime.deltaMs / 1000, 0.033);
+    }
+
+    static setLastTimeStamp(currentTimestamp) {
+        if (DeltaTime.lastTimeStamp === 0) {
+            DeltaTime.lastTimeStamp = currentTimestamp;
+            return;
+        }
+        DeltaTime.deltaMs = currentTimestamp - DeltaTime.lastTimeStamp;
+        DeltaTime.lastTimeStamp = currentTimestamp;
+    }
+
+
+}
+
 export class IDGenerator {
 
     count = 0;
@@ -35,6 +60,8 @@ export class FrameIntervals {
             "id":id, 
             "callback": callback,
             "startMilliseconds": FrameIntervals.milliseconds,
+
+            "passedTime": 0,
             "milliseconds": milliseconds
         }
         return id;
@@ -49,9 +76,11 @@ export class FrameIntervals {
         FrameIntervals.milliseconds = milliseconds;
         Object.keys(FrameIntervals.intervals).forEach((key) => {
             let interval = FrameIntervals.intervals[key];
-            if(FrameIntervals.milliseconds - interval["startMilliseconds"] >= interval["milliseconds"]) {
+            interval["passedTime"] += DeltaTime.getDeltaMS();
+            //if(FrameIntervals.milliseconds - interval["startMilliseconds"] >= interval["milliseconds"]) {
+            if(interval["passedTime"] >= interval["milliseconds"]) {
                 interval["callback"]();
-                interval["startMilliseconds"] = milliseconds;
+                interval["passedTime"] = 0;
             }
         })
 
@@ -72,7 +101,7 @@ export class FrameTimeout {
         FrameTimeout.timeouts[id] = {
             "id":id, 
             "callback": callback,
-            "lastMilliseconds": FrameTimeout.milliseconds,
+            "passedTime": 0,
             "milliseconds": milliseconds,
             "isExecuted": false
         }
@@ -83,15 +112,14 @@ export class FrameTimeout {
         return delete FrameTimeout.timeouts[id];
     }
 
-    static startListenTimeouts(milliseconds) {
-        FrameTimeout.milliseconds = milliseconds;
+    static startListenTimeouts() {
         Object.keys(FrameTimeout.timeouts).forEach((key) => {
             let timeout = FrameTimeout.timeouts[key];
-            if(FrameTimeout.milliseconds - timeout["lastMilliseconds"] >= timeout["milliseconds"] && !timeout["isExecuted"]) {
+            timeout["passedTime"] += DeltaTime.getDeltaMS();
+            if(timeout["passedTime"] >= timeout["milliseconds"] && !timeout["isExecuted"]) {
                 timeout["callback"]();
                 timeout["isExecuted"] = true;
             }
         })
-
     }
 }

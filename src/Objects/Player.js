@@ -1,7 +1,7 @@
 import Collider from "../Collider.js";
 import Coord from "../Coord.js";
 import Rect from "../Rect.js";
-import { FrameTimeout, IDGenerator } from "../Tools.js";
+import { DeltaTime, FrameTimeout, IDGenerator } from "../Tools.js";
 import GameObject from "./GameObject.js";
 import LaserShot from "./LaserShot.js";
 
@@ -10,7 +10,7 @@ export default class Player extends GameObject {
     __weaponShotIsAble = true;
     __laserIDGenerator = new IDGenerator("laser");
     __isDead = false;
-    __velocity = 3;
+    __velocity = 150;
 
     startX = 0;
     startY = 80;
@@ -97,19 +97,19 @@ export default class Player extends GameObject {
     }
 
     moveUp() {
-        this.__coord = new Coord(this.getX(), this.getY() - this.__velocity)
+        this.__coord = new Coord(this.getX(), this.getY() - (this.__velocity * DeltaTime.getDeltaSeconds()))
     }
 
     moveDown() {
-        this.__coord = new Coord(this.getX(), this.getY() + this.__velocity)
+        this.__coord = new Coord(this.getX(), this.getY() + (this.__velocity * DeltaTime.getDeltaSeconds()))
     }
 
     moveLeft() {
-        this.__coord = new Coord(this.getX() - this.__velocity, this.getY())
+        this.__coord = new Coord(this.getX() - (this.__velocity * DeltaTime.getDeltaSeconds()), this.getY())
     }
 
     moveRight() {
-        this.__coord = new Coord(this.getX() + this.__velocity, this.getY())
+        this.__coord = new Coord(this.getX() + (this.__velocity * DeltaTime.getDeltaSeconds()), this.getY())
     }
 
     shot() {

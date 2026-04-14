@@ -1,5 +1,5 @@
 import Coord from "../Coord.js";
-import { FrameIntervals, FrameTimeout } from "../Tools.js";
+import { DeltaTime, FrameIntervals, FrameTimeout } from "../Tools.js";
 import GameObject from "./GameObject.js";
 
 export default class Enemy extends GameObject {
@@ -38,7 +38,7 @@ export default class Enemy extends GameObject {
         this.posRender();
     }
 
-    preRender() {
+    update() {
         if (this.__coord.getY() > 820) {
             this.destroy();
             this.pointsElement.textContent = Number.parseInt(this.pointsElement.textContent) - 1;
@@ -48,17 +48,13 @@ export default class Enemy extends GameObject {
         //this.moveZigZag();
     }
 
-    update() {
-
-    }
-
     destroy() {
         super.destroy();
         FrameIntervals.removeInterval(this.idZigZag);
     }
 
     moveDown() {
-        this.__coord = new Coord(this.getX() ,this.getY() + 1)
+        this.__coord = new Coord(this.getX() ,this.getY() + (75 * DeltaTime.getDeltaSeconds()))
     }
 
     moveZigZag() {
