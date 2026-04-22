@@ -1,4 +1,6 @@
+import Collider from "../Collider.js";
 import Coord from "../Coord.js";
+import Rect from "../Rect.js";
 import { DeltaTime, FrameIntervals, FrameTimeout } from "../Tools.js";
 import GameObject from "./GameObject.js";
 
@@ -17,6 +19,14 @@ export default class Enemy extends GameObject {
     }
 
     main() {
+        let collider = new Collider(
+            this, 
+            this.__scenario, 
+            new Rect(28, 29), 
+            new Coord(20, 5)
+        );
+        this.__colliderManager.add(collider);
+
         this.pointsElement = document.querySelector("#pontuation");
         this.idZigZag = FrameIntervals.addInterval(() => {
             if(this.zigzag === "left") {
@@ -34,6 +44,8 @@ export default class Enemy extends GameObject {
             this.startWidth, this.startHeight,
             this.getX(), this.getY(),
             this.__rect.getWidth(), this.__rect.getHeight())
+        
+        this.__colliderManager.render(context);
 
         this.posRender();
     }

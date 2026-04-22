@@ -31,22 +31,32 @@ export default class Player extends GameObject {
 
 
     main() {
-        this.__collider = new Collider(this, this.__scenario);
-        this.__collider.addSubscriber("point");
-        this.__collider.setWhenThereIsCollision((object) => {
+        //this.__collider = new Collider(
+        let collider = new Collider(
+            this, 
+            this.__scenario, 
+            new Rect(52, 52), 
+            new Coord(13, 12)
+        );
+
+        collider.addSubscriber("point");
+        collider.setWhenThereIsCollision((object) => {
+            console.log(object);
             if (object.class === "point") {
                 this.__isDead = true;
                 this.destroy();
                 new Audio("./assets/sounds/atari_boom.wav").play();
             }
         })
+        this.__colliderManager.add(collider)
     }
 
     preRender() {
     }
     
     posRender() {
-        this.__collider.updateDetection();
+        //this.__collider.updateDetection();
+        this.__colliderManager.updateDetection();
     }
 
     render(context) {
@@ -55,10 +65,13 @@ export default class Player extends GameObject {
         context.drawImage(Player.spaceShipImage,
             this.startX, this.startY,
             this.startWidth, this.startHeight,
-
-
+            
+            
             this.getX(), this.getY(),
             this.__rect.getWidth(), this.__rect.getHeight())
+            
+            
+        this.__colliderManager.render(context);
 
         this.posRender();
     }

@@ -45,6 +45,7 @@ class Game {
         )
        buildSpaceShipsTroopps(new Coord(100, -500), 5, 5, this.scenario, this.enemiesGeneratorId);
 
+       /*
         let leftWallObject = new GameObject("left-wall", new Rect(20, this.canvas.height), new Coord(0, 0), this.scenario);
         leftWallObject.setColor("green");
     
@@ -53,11 +54,11 @@ class Game {
         leftWallCollider.setWhenThereIsCollision((object) => {
             object.setCoord(new Coord(leftWallObject.getX() + 17 ,object.getY()));
         })
-
+        */
         FrameTimeout.add(() => {console.log("Executando timeout de teste")}, 10000);
 
-        leftWallObject.setCollider(leftWallCollider);
-        this.scenario.addObject(leftWallObject);
+        //leftWallObject.setCollider(leftWallCollider);
+        //this.scenario.addObject(leftWallObject);
         requestAnimationFrame(this.gameLoop);
 
     }

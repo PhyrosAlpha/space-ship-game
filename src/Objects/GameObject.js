@@ -1,3 +1,5 @@
+import { CollidersManager } from "../Collider.js";
+
 export default class GameObject {
 
     __rect;
@@ -6,6 +8,7 @@ export default class GameObject {
     __scenario;
     __collider;
 
+
     constructor(id, rect, coord, scenario) {
         this.__id = id;
         this.__rect = rect;
@@ -13,6 +16,7 @@ export default class GameObject {
         this.color = "black";
         this.class = "default"
         this.__scenario = scenario;
+        this.__colliderManager = new CollidersManager(scenario);
         this.main();
     }
 
@@ -97,5 +101,9 @@ export default class GameObject {
 
     setCoord(coord) {
         this.__coord = coord;
+    }
+
+    getColliders() {
+        return this.__colliderManager.getColliders();
     }
 }
