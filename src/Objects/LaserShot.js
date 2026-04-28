@@ -11,10 +11,16 @@ export default class LaserShot extends GameObject {
     }
 
     main() {
-        this.__collider = new Collider(this, this.__scenario);
-        this.__collider.addSubscriber("point");
+        let collider = new Collider(
+            this, 
+            this.__scenario, 
+            new Rect(6, 20), 
+            new Coord(7, 0)
+        );
 
-        this.__collider.setWhenThereIsCollision((object) => {
+        collider.addSubscriber("point");
+
+        collider.setWhenThereIsCollision((object) => {
             if (object.class === "point") {
                 object.destroy();
                 this.destroy();
@@ -24,7 +30,9 @@ export default class LaserShot extends GameObject {
             let pointsElement = document.querySelector("#pontuation");
             pointsElement.textContent = Number.parseInt(pointsElement.textContent) + 1;
         })
+
         new Audio("./assets/sounds/laser-shot.ogg").play();
+        this.__colliderManager.add(collider);
     }
 
     update() {
@@ -32,7 +40,7 @@ export default class LaserShot extends GameObject {
             this.destroy();
         }
         this.moveUp();
-        this.__collider.updateDetection();
+        this.__colliderManager.updateDetection();
     }
 
     render(context) {
@@ -40,11 +48,13 @@ export default class LaserShot extends GameObject {
         context.fillStyle = "green";
 
         context.fillRect(this.__coord.getX() + 7, this.__coord.getY(), this.__rect.getWidth(), this.__rect.getHeight());
+
+        this.__colliderManager.render(context);
         this.posRender(context);
     }
 
     moveUp() {
-        this.__coord = new Coord(this.getX(), this.getY() - (600 * DeltaTime.getDeltaSeconds()))
+        this.__coord = new Coord(this.getX(), this.getY() - (1000 * DeltaTime.getDeltaSeconds()))
     }
 
 }
